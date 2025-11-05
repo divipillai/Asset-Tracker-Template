@@ -316,15 +316,14 @@ For more information, refer the following documentation:
 - [TF-M Documentation](https://tf-m-user-guide.trustedfirmware.org/)
 - [nRF Connect SDK TF-M Guide](https://docs.nordicsemi.com/bundle/ncs-latest/page/nrf/security/tfm/index.html)
 
-!!! note "Note"
-
-      On hardfault, the fault frame might not be printed due to the device rebooting before the log buffer is flushed.
-      To circumvent this issue add the following configurations:
-
-      ```bash
-      CONFIG_LOG_MODE_IMMEDIATE=y
-      CONFIG_RESET_ON_FATAL_ERROR=n
-      ```
+> [!NOTE]
+> On hardfault, the fault frame might not be printed due to the device rebooting before the log buffer is flushed.
+>
+> To circumvent this issue add the following configurations:
+> ```bash
+> CONFIG_LOG_MODE_IMMEDIATE=y
+> CONFIG_RESET_ON_FATAL_ERROR=n
+> ```
 
 When enabling immediate logging, it might be necessary to increase the stack size of certain threads due to logging being executed in context which increases stack usage.
 

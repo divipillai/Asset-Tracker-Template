@@ -6,7 +6,9 @@ The Asset Tracker can be configured remotely through nRF Cloud's device shadow m
 
 ### Configuration through nRF Cloud UI
 
-!!! important "important" For new devices, the **View Config** section in the nRF Cloud UI will not be visible. It will become visible once the shadow is patched using the REST call documented below.
+> [!NOTE]
+
+> In most cases, the default APN provided by the carrier should work without additional configuration.
 
 1. Log in to [nRF Cloud](https://nrfcloud.com/).
 2. Navigate to **Devices** and select your device.
