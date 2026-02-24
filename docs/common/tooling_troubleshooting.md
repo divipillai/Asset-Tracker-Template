@@ -1,7 +1,7 @@
 # Tooling and Troubleshooting
 
 General overview of tools used to troubleshoot the template code and/or modem/network behavior.
-For more knowledge on debugging and troubleshooting [nRF Connect SDK](https://github.com/nrfconnect/sdk-nrf) based applications in general, refer to these links:
+For more knowledge on debugging and troubleshooting [nRF Connect SDK](https://github.com) based applications in general, refer to these links:
 
 - [Debugging and troubleshooting](https://academy.nordicsemi.com/courses/nrf-connect-sdk-intermediate/lessons/lesson-2-debugging/)
 - [Cellular IoT Fundamentals Developer Academy Course](https://academy.nordicsemi.com/courses/cellular-iot-fundamentals/)
@@ -313,7 +313,6 @@ Secure faults will display:
 
 For more information, refer the following documentation:
 
-- [TF-M Documentation](https://tf-m-user-guide.trustedfirmware.org/)
 - [nRF Connect SDK TF-M Guide](https://docs.nordicsemi.com/bundle/ncs-latest/page/nrf/security/tfm/index.html)
 
 !!! note "Note"

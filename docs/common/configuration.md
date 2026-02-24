@@ -4,7 +4,94 @@ The following sections explain different configuration needed for the Asset trac
 
 ## Set sampling interval and logic from cloud
 
+<<<<<<< Updated upstream
 The Asset Tracker can be configured remotely through nRF Cloud's device shadow mechanism. This allows dynamic adjustment of device behavior without requiring firmware updates.
+=======
+## Table of Contents
+
+- [Runtime Configurations](#runtime-configurations)
+  - [Operation Modes](#operation-modes)
+    - [Passthrough Mode](#passthrough-mode)
+    - [Buffer Mode](#buffer-mode)
+- [Remote Configuration from Cloud](#remote-configuration-from-cloud)
+  - [Configuration through nRF Cloud UI](#configuration-through-nrf-cloud-ui)
+  - [Configuration through REST API](#configuration-through-rest-api)
+  - [Sending Commands through REST API](#sending-commands-through-rest-api)
+  - [Configuration Flow](#configuration-flow)
+- [Set Location Method Priorities](#set-location-method-priorities)
+  - [Available Location Methods](#available-location-methods)
+  - [Configuration Examples](#configuration-examples)
+- [Storage Mode Configuration](#storage-mode-configuration)
+- [Network Configuration](#network-configuration)
+  - [NB-IoT vs LTE-M](#nb-iot-vs-lte-m)
+  - [Power Saving Mode (PSM)](#power-saving-mode-psm)
+  - [Access Point Name (APN)](#access-point-name-apn)
+- [LED Status Indicators](#led-status-indicators)
+  - [Example: Setting LED Colors](#example-setting-led-colors)
+
+</div>
+
+## Runtime configurations
+
+The device supports runtime configurations that allow you to modify the template's behavior without firmware updates.
+
+The template uses separate parameters to control:
+
+- **Cloud updates**: When the device sends data and checks for updates.
+- **Data sampling**: When the device collects sensor and location data.
+
+Cloud updates include sending data, checking for FOTA jobs, and retrieving configuration/command updates. For implementation details, see [Configuration Flow](#configuration-flow).
+
+| Parameter | Description | Unit | Valid Range | Static Configuration
+|-----------|-------------|------|-------------|---------------------
+| **`update_interval`** | <ul><li>**In passthrough mode**: Sampling and cloud update interval.</li><li>**In buffer mode**: Cloud update interval</li></ul> | Seconds | 1 to 4294967295 | `CONFIG_APP_CLOUD_UPDATE_INTERVAL_SECONDS` (default: 600)
+| **`sample_interval`** | <ul><li>**In passthrough mode**: Not valid.</li><li>**In buffer mode**: Sample interval.</li></ul> | Seconds | 1 to 4294967295 | `CONFIG_APP_BUFFER_MODE_SAMPLING_INTERVAL_SECONDS` (default: 150)
+| **`buffer_mode`** | Storage mode control. Set to `true` for buffer mode or `false` for passthrough mode. | Boolean | true or false | `CONFIG_APP_STORAGE_INITIAL_MODE_PASSTHROUGH` (default) / `CONFIG_APP_STORAGE_INITIAL_MODE_BUFFER`
+
+You can set the runtime configurations through the cloud device shadow and they will override the compile-time Kconfig defaults shown in the Static Configuration column.
+
+The complete device shadow structure is defined in the [CDDL](https://datatracker.ietf.org/doc/html/rfc8610) schema at `Asset-Tracker-Template/app/src/cbor/device_shadow.cddl`. This schema specifies all supported configuration parameters, commands, and their valid value ranges.
+
+### Operation modes
+
+The device operates in one of two following modes based on which parameters are configured:
+
+#### Passthrough mode
+
+**Activated**: When `buffer_mode` is set to `false` (or not configured)
+
+**Configuration**: Uses `update_interval` parameter only (ignores `sample_interval`)
+
+**Behavior**:
+
+- Samples sensors and location at `update_interval`.
+- Sends data immediately to cloud.
+- Polls shadow and checks FOTA at `update_interval`.
+
+**Use case**: Real-time data transmission, lower latency
+
+#### Buffer mode
+
+**Activated**: When `buffer_mode` is set to `true`
+
+**Configuration**: Uses both `sample_interval` and `update_interval` parameters
+
+**Behavior**:
+
+- Samples sensors and location at `sample_interval`.
+- Buffers data locally.
+- Sends buffered data at `update_interval`.
+- Polls shadow and checks FOTA at `update_interval`.
+
+**Use case**: Reduced power consumption, batch data transmission
+
+> [!CAUTION]
+> While low intervals are supported, they can cause network congestion and connectivity issues, especially in poor network conditions. Choose intervals appropriate for your network quality, use case, and device mode.
+
+## Remote configuration from cloud
+
+The Asset Tracker can be configured remotely through nRF Cloud's device shadow mechanism.
+>>>>>>> Stashed changes
 
 ### Configuration through nRF Cloud UI
 
@@ -87,6 +174,42 @@ The following are the available location methods:
     CONFIG_LOCATION_REQUEST_DEFAULT_METHOD_SECOND_CELLULAR=y
     ```
 
+<<<<<<< Updated upstream
+=======
+## Storage mode configuration
+
+The storage module handles collected data in two modes: **Passthrough** (forward immediately, default) or **Buffer** (store and transmit in batches for lower power consumption). See [Storage Module Documentation](../modules/storage.md) for details.
+
+**Basic configuration** in `prj.conf`:
+
+Passthrough mode is the default mode. To enable buffer mode use:
+
+```bash
+CONFIG_APP_STORAGE_INITIAL_MODE_BUFFER=y
+```
+
+To configure buffer size and records per stored data type:
+
+```bash
+CONFIG_APP_STORAGE_MAX_RECORDS_PER_TYPE=8      # Records per data type
+CONFIG_APP_STORAGE_BATCH_BUFFER_SIZE=256       # Batch buffer size
+```
+
+For minimal use, include the `overlay-storage-minimal.conf` overlay.
+
+**Runtime control** (shell commands when `CONFIG_APP_STORAGE_SHELL=y`):
+
+```bash
+att_storage mode passthrough   # Switch to passthrough
+att_storage mode buffer        # Switch to buffer
+att_storage flush              # Flush stored data
+att_storage clear              # Clear all data
+att_storage stats              # Show statistics (if enabled)
+```
+
+See [Storage Module Configurations](../modules/storage.md#configurations) for all options.
+
+>>>>>>> Stashed changes
 ## Network configuration
 
 ### NB-IoT vs LTE-M
